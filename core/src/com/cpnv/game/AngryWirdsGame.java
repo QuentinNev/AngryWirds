@@ -27,22 +27,25 @@ public class AngryWirdsGame extends ApplicationAdapter {
 
 	@Override
 	public void create () {
+
+		// INSTANTIATION
 		batch = new SpriteBatch();
 		background = new Texture("background.jpg");
 		scene = new Scenery();
-
-
 		bird = new Bird(new Vector2(100,500));
 		camera = new OrthographicCamera();
+
+		// SET PARAMS
 		camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
 		batch.setProjectionMatrix(camera.combined);
 
+		// INPUT MANAGEMENT
 		Gdx.input.setInputProcessor(new InputAdapter(){
 			@Override
 			public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-				Gdx.app.log("ANGRY Click", screenX + " : " + (WORLD_HEIGHT - screenY));
-				Gdx.app.log("ANGRY Sprite", "" + bird.getSprite().getBoundingRectangle());
-				if (bird.getSprite().getBoundingRectangle().contains(screenX, WORLD_HEIGHT - screenY)) bird.unFreeze();
+				Vector3 realPress = new Vector3(screenX, screenY,0);
+				camera.unproject(realPress);
+				if (bird.getSprite().getBoundingRectangle().contains(realPress.x, realPress.y)) bird.unFreeze(); //Gdx.app.log("houhihouhaha bang bang walla walla bang bang", "lol");
 				return true;
 			}
 		});
