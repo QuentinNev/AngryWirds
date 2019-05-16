@@ -44,12 +44,15 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		Gdx.input.setInputProcessor(new InputAdapter(){
 			@Override
 			public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-				Vector3 realPress = new Vector3(screenX, screenY,0);
-				camera.unproject(realPress);
-				if (bird.getSprite().getBoundingRectangle().contains(realPress.x, realPress.y)) bird.unFreeze(); //Gdx.app.log("houhihouhaha bang bang walla walla bang bang", "lol");
+				Vector3 realPress = unproject(screenX, screenY);
+				if (bird.getSprite().getBoundingRectangle().contains(realPress.x, realPress.y)) bird.unFreeze();
 				return true;
 			}
 		});
+	}
+
+	private Vector3 unproject(float x, float y) {
+		return camera.unproject(new Vector3(x, y, 0));
 	}
 
 	private void update() {
