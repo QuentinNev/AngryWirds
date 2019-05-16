@@ -13,7 +13,7 @@ public class Bird extends MovingObject {
 
     public Bird(Vector2 position) {
         super(spritePath, position, size);
-        throwStrength = 500f;
+        throwStrength = 1000f;
         freezed = true;
     }
 
