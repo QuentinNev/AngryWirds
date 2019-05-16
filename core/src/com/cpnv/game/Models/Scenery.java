@@ -15,9 +15,17 @@ public final class Scenery {
         scene.add(movingObject);
     }
 
+    public void remove(MovingObject movingObject) { scene.remove(movingObject); }
+
     public void draw(SpriteBatch batch) {
         for (MovingObject item: scene) {
             item.draw(batch);
+        }
+    }
+
+    public void move(float dt){
+        for (MovingObject item: scene) {
+            item.move(dt);
         }
     }
 }
