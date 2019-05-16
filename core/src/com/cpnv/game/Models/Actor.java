@@ -12,8 +12,8 @@ public abstract class Actor extends com.badlogic.gdx.scenes.scene2d.Actor {
 
     public Actor(String spritePath, Vector2 position, Vector2 size) {
         sprite = new Sprite(new Texture(spritePath));
-        sprite.setBounds(position.x, position.x, size.x, size.y);
-        sprite.setOrigin(size.x / 2, size.y / 2);
+        sprite.setBounds(position.x, position.y, size.x, size.y);
+        sprite.setOrigin(position.x, position.y / 2);
 }
 
     public Actor(){}
