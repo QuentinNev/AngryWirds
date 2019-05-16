@@ -13,10 +13,12 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.cpnv.game.Models.Bird;
 import com.cpnv.game.Models.Scenery;
+import com.cpnv.game.Models.Wasp;
 
 public class AngryWirdsGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	Bird bird;
+	Wasp wasp;
 	Texture background;
 	InputProcessor inputPro;
 	Scenery scene;
@@ -33,8 +35,11 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		background = new Texture("background.jpg");
 		scene = new Scenery();
-		bird = new Bird(new Vector2(100,500));
 		camera = new OrthographicCamera();
+		bird = new Bird(new Vector2(100,500));
+		wasp = new Wasp(new Vector2(500, 500));
+		scene.add(bird);
+		scene.add(wasp);
 
 		// SET PARAMS
 		camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
@@ -57,22 +62,23 @@ public class AngryWirdsGame extends ApplicationAdapter {
 
 	private void update() {
 		float dt = Gdx.graphics.getDeltaTime();
-		bird.move(dt);
+		scene.move(dt);
 	}
 
 	@Override
 	public void render () {
+		//Gdx.app.log("ANGRY", wasp.getX() + " // " + wasp.getY());
 		//----- Updating -----//
 
 		update();
 
-		//----- Real rendering -----//
+		//----- True rendering -----//
+
 
 		Gdx.gl.glClearColor(1, 1, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
-		scene.add(bird);
 		scene.draw(batch);
 		batch.end();
 
