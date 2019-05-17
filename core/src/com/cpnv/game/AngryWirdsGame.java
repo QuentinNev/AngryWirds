@@ -1,16 +1,20 @@
 package com.cpnv.game;
 
+// LibGDX
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.GL20;
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+
+// GAME OBJECT
 import com.cpnv.game.Models.Bird;
 import com.cpnv.game.Models.Scenery;
 import com.cpnv.game.Models.Wasp;
@@ -23,8 +27,8 @@ public class AngryWirdsGame extends ApplicationAdapter {
 	InputProcessor inputPro;
 	Scenery scene;
 
-	static final int WORLD_WIDTH = 1600;
-	static final int WORLD_HEIGHT = 900;
+	public static final int WORLD_WIDTH = 1600;
+	public static final int WORLD_HEIGHT = 900;
 
 	private OrthographicCamera camera;
 
@@ -36,10 +40,11 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		background = new Texture("background.jpg");
 		scene = new Scenery();
 		camera = new OrthographicCamera();
+
 		bird = new Bird(new Vector2(100,500));
 		wasp = new Wasp(new Vector2(500, 500));
-		scene.add(bird);
-		scene.add(wasp);
+        scene.add(bird);
+        scene.add(wasp);
 
 		// SET PARAMS
 		camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
@@ -67,25 +72,14 @@ public class AngryWirdsGame extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		//Gdx.app.log("ANGRY", wasp.getX() + " // " + wasp.getY());
 		//----- Updating -----//
-
 		update();
 
 		//----- True rendering -----//
-
-
-		Gdx.gl.glClearColor(1, 1, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
 		scene.draw(batch);
 		batch.end();
-
-		/*
-		float dt = Gdx.graphics.getDeltaTime();
-		Gdx.app.log("Anrgy","Deltatime is : " + dt);
-		*/
 	}
 
 	@Override
