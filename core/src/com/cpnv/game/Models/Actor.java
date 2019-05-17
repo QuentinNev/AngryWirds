@@ -8,7 +8,6 @@ import com.badlogic.gdx.math.Vector2;
 
 public abstract class Actor extends com.badlogic.gdx.scenes.scene2d.Actor {
     protected Sprite sprite;
-    protected Vector2 size;
 
     public Actor(String spritePath, Vector2 position, Vector2 size) {
         sprite = new Sprite(new Texture(spritePath));
