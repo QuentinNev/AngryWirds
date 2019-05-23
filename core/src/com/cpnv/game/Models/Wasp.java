@@ -6,8 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import java.util.Random;
 
 public class Wasp extends MovingObject {
-    private static final String spritePath = "bean.png";
-    private static final Vector2 size = new Vector2(175, 150);
+    private static final String spritePath = "bear.png";
+    private static final Vector2 size = new Vector2(100, 125);
 
     private static final int WORLD_WIDTH = 1600;
     private static final int WORLD_HEIGHT = 900;
