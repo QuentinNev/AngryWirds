@@ -16,24 +16,33 @@ import com.badlogic.gdx.math.Vector3;
 
 // GAME OBJECT
 import com.cpnv.game.Models.Bird;
+import com.cpnv.game.Models.Box;
 import com.cpnv.game.Models.Scenery;
+import com.cpnv.game.Models.Tnt;
 import com.cpnv.game.Models.Wasp;
+
+import java.util.Random;
 
 public class AngryWirdsGame extends ApplicationAdapter {
 	SpriteBatch batch;
 	Bird bird;
 	Wasp wasp;
 	Texture background;
-	InputProcessor inputPro;
 	Scenery scene;
 
 	public static final int WORLD_WIDTH = 1600;
 	public static final int WORLD_HEIGHT = 900;
+	public static final int FLOOD_HEIGHT = 120;
 
 	private OrthographicCamera camera;
 
 	@Override
 	public void create () {
+		int boxNumber = 16;
+		int tntNumer = 4;
+		int tntScore = -50;
+		int boxStartPos = 400;
+		int boxOffset = (int)Box.getSize().x;
 
 		// INSTANTIATION
 		batch = new SpriteBatch();
@@ -45,6 +54,25 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		wasp = new Wasp(new Vector2(500, 500));
         scene.add(bird);
         scene.add(wasp);
+
+        // Place boxes
+		for(int i = 0; i < boxNumber; i++) {
+			try {
+				scene.addNonStackableObjects(new Box(new Vector2(boxStartPos + (boxOffset * i), 120)));
+			} catch (Exception e) {
+				Gdx.app.log("ANGRY", e + "");
+			}
+		}
+
+		// Place Tnts
+		for (int i = 0; i < tntNumer; i++) {
+			Random r = new Random();
+			try {
+				scene.addNonStackableObjects(new Tnt(new Vector2(r.nextInt(WORLD_WIDTH - boxStartPos) + boxStartPos,FLOOD_HEIGHT + boxOffset), -50));
+			} catch (Exception e) {
+				i--;
+			}
+		}
 
 		// SET PARAMS
 		camera.setToOrtho(false, WORLD_WIDTH, WORLD_HEIGHT);
