@@ -19,11 +19,8 @@ public final class Scenery {
     public void addNonStackableObjects(MovingObject object) throws Exception  {
         // Check before adding to the object if the space is free
         Rectangle rectangle = object.getSprite().getBoundingRectangle();
-        for (MovingObject item: scene) {
-            if (rectangle.overlaps(item.getSprite().getBoundingRectangle())) throw new Exception("Something is already there");
-        }
+        for (MovingObject item: scene) if (rectangle.overlaps(item.getSprite().getBoundingRectangle())) throw new Exception("Something is already there");
         scene.add(object);
-
     }
 
     public void remove(MovingObject object) { scene.remove(object); }
