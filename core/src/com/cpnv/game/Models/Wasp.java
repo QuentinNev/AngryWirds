@@ -19,17 +19,19 @@ public class Wasp extends MovingObject {
 
     @Override
     public void accelerate(float dt) {
-        int min = 0;
-        int max = 2;
+        if (!freezed) {
+            int min = 0;
+            int max = 2;
 
-        Random r = new Random();
-        int randomX = r.nextInt(max);
-        int randomY = r.nextInt(max);
+            Random r = new Random();
+            int randomX = r.nextInt(max);
+            int randomY = r.nextInt(max);
 
-        velocity.x += (sprite.getX() > WORLD_WIDTH / 2) ? -randomX : randomX;
-        velocity.y += (sprite.getY() > WORLD_HEIGHT / 2 + 100) ? -randomY : randomY;
+            velocity.x += (sprite.getX() > WORLD_WIDTH / 2) ? -randomX : randomX;
+            velocity.y += (sprite.getY() > WORLD_HEIGHT / 2 + 100) ? -randomY : randomY;
 
-        velocity.x = velocity.x > speedLimit ? speedLimit : velocity.x;
-        velocity.y = velocity.y > speedLimit ? speedLimit : velocity.y;
+            velocity.x = velocity.x > speedLimit ? speedLimit : velocity.x;
+            velocity.y = velocity.y > speedLimit ? speedLimit : velocity.y;
+        }
     }
 }
