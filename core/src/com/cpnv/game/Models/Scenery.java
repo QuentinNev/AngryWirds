@@ -2,19 +2,23 @@ package com.cpnv.game.Models;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 
 import java.util.ArrayList;
 
 public final class Scenery {
     private ArrayList<Actor> scene;
     private ShapeRenderer shapeRenderer;
+    private BitmapFont font;
 
     public Scenery (OrthographicCamera camera) {
         scene = new ArrayList<Actor>();
+        font = new BitmapFont();
         shapeRenderer = new ShapeRenderer();
         shapeRenderer.setProjectionMatrix(camera.combined);
     }
@@ -65,5 +69,16 @@ public final class Scenery {
             shapeRenderer.end();
             Gdx.app.log("ANGRY", "Wow shapeRenderer c'est vraiment useless !");
         }
+    }
+
+    // Only called on touchDown()
+    public String checkTouchOnPigs(float x, float y) {
+        for(Actor item: scene) {
+            if (item.getClass() == Pig.class && item.getSprite().getBoundingRectangle().contains(x, y)) {
+                Pig p = (Pig)item;
+                return p.getWord();
+            }
+        }
+        return null;
     }
 }

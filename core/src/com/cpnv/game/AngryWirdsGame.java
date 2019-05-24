@@ -5,11 +5,11 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.InputAdapter;
-import com.badlogic.gdx.InputProcessor;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -18,33 +18,37 @@ import com.badlogic.gdx.math.Vector3;
 import com.cpnv.game.Models.Actor;
 import com.cpnv.game.Models.Bird;
 import com.cpnv.game.Models.Box;
-import com.cpnv.game.Models.MovingObject;
 import com.cpnv.game.Models.Pig;
 import com.cpnv.game.Models.Scenery;
 import com.cpnv.game.Models.Tnt;
 import com.cpnv.game.Models.Wasp;
 
+import java.util.ArrayList;
 import java.util.Random;
 
 public class AngryWirdsGame extends ApplicationAdapter {
-	SpriteBatch batch;
-	Bird bird;
-	Wasp wasp;
-	Actor collider;
-	Texture background;
-	Scenery scene;
-
-	public static final int WORLD_WIDTH = 1600;
-	public static final int WORLD_HEIGHT = 900;
-	public static final int FLOOR_HEIGHT = 120;
-
+	private SpriteBatch batch;
 	private OrthographicCamera camera;
+	private Actor collider;
+	private Texture background;
+	private Scenery scene;
+	private BitmapFont font;
+
+	private Bird bird;
+	private Wasp wasp;
+
+	private static final int WORLD_WIDTH = 1600;
+	private static final int WORLD_HEIGHT = 900;
+	private static final int FLOOR_HEIGHT = 120;
+
+	private String pigText;
 
 	@Override
 	public void create () {
 		int boxNumber = 16;
 		int tntNumer = 4;
 		int tntScore = -50;
+		int pigScore = 100;
 		int boxStartPos = 400;
 		int boxOffset = (int)Box.getSize().x;
 
@@ -53,6 +57,9 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		background = new Texture("background.jpg");
 		camera = new OrthographicCamera();
 		scene = new Scenery(camera);
+		font = new BitmapFont();
+
+		pigText = null;
 
 		bird = new Bird(new Vector2(100,500));
 		wasp = new Wasp(new Vector2(500, 500));
@@ -74,7 +81,7 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		for (int i = 0; i < tntNumer; i++) {
 			Random r = new Random();
 			try {
-				scene.addNonStackableObjects(new Tnt(new Vector2(r.nextInt((WORLD_WIDTH - boxOffset) - boxStartPos) + boxStartPos,FLOOR_HEIGHT + boxOffset), -50));
+				scene.addNonStackableObjects(new Tnt(new Vector2(r.nextInt((WORLD_WIDTH - boxOffset) - boxStartPos) + boxStartPos,FLOOR_HEIGHT + boxOffset), tntScore));
 			} catch (Exception e) {
 				i--;
 			}
@@ -84,7 +91,7 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		for (int i = 0; i < tntNumer; i++) {
 			Random r = new Random();
 			try {
-				scene.addNonStackableObjects(new Pig(new Vector2(r.nextInt((WORLD_WIDTH - boxOffset) - boxStartPos) + boxStartPos,FLOOR_HEIGHT + boxOffset), "Boudin"));
+				scene.addNonStackableObjects(new Pig(new Vector2(r.nextInt((WORLD_WIDTH - boxOffset) - boxStartPos) + boxStartPos,FLOOR_HEIGHT + boxOffset), "Boudin", pigScore));
 			} catch (Exception e) {
 				i--;
 			}
@@ -100,6 +107,14 @@ public class AngryWirdsGame extends ApplicationAdapter {
 			public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 				Vector3 realPress = unproject(screenX, screenY);
 				if (bird.getSprite().getBoundingRectangle().contains(realPress.x, realPress.y)) bird.unFreeze();
+				pigText = null;
+				return true;
+			}
+
+			@Override
+			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+				Vector3 realPress = unproject(screenX, screenY);
+				pigText = scene.checkTouchOnPigs(realPress.x, realPress.y);
 				return true;
 			}
 		});
@@ -114,7 +129,7 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		scene.move(dt);
 		collider = scene.checkBirdCollisions(bird);
 
-		checkForWin(collider);
+		checkCollision(collider);
 	}
 
 	@Override
@@ -126,6 +141,9 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		batch.begin();
 		batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
 		scene.draw(batch);
+		if(pigText != null){
+			font.draw(batch, pigText, 10, 200);
+		}
 		batch.end();
 	}
 
@@ -134,11 +152,12 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		batch.dispose();
 	}
 
-	private void checkForWin(Actor collider){
+	private void checkCollision(Actor collider){
 		if (collider != null){
 			// here we convert the class name into an int to be able to switch on it because android
 			// SDK doesn't use JDK 1.7 it seems
 			int colliderCode = collider.getClass().getSimpleName().hashCode();
+			//Gdx.app.log("ANGRY", "Touched " + collider.getClass().getSimpleName() + " as " + collider.getClass().getSimpleName().hashCode());
 			bird.freeze();
 			switch (colliderCode) {
 				// WASP or a good metal group
@@ -154,6 +173,10 @@ public class AngryWirdsGame extends ApplicationAdapter {
 
 				// Box
 				case 66987:
+					resetObjects();
+					break;
+
+				case 80238:
 					resetObjects();
 					break;
 			}
