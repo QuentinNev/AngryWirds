@@ -100,7 +100,7 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		for (int i = 0; i < tntNumer; i++) {
 			Random r = new Random();
 			try {
-				scene.addNonStackableObjects(new Pig(new Vector2(r.nextInt((WORLD_WIDTH - boxOffset) - boxStartPos) + boxStartPos,FLOOR_HEIGHT + boxOffset), "Boudin", pigScore));
+				scene.addNonStackableObjects(new Pig(new Vector2(r.nextInt((WORLD_WIDTH - boxOffset) - boxStartPos) + boxStartPos,FLOOR_HEIGHT + boxOffset), Double.toString(Math.random()), pigScore));
 			} catch (Exception e) {
 				i--;
 			}
