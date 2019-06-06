@@ -22,6 +22,7 @@ import com.cpnv.game.Models.Box;
 import com.cpnv.game.Models.Pig;
 import com.cpnv.game.Models.Scenery;
 import com.cpnv.game.Models.Tnt;
+import com.cpnv.game.Models.VocabularyProvider;
 import com.cpnv.game.Models.Wasp;
 
 import java.util.Random;
@@ -35,6 +36,7 @@ public class AngryWirdsGame extends ApplicationAdapter {
 	private Texture background;
 	private Scenery scene;
 	private BitmapFont font;
+	private VocabularyProvider voc;
 
 	private Bird bird;
 	private Wasp wasp;
@@ -59,6 +61,7 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		background = new Texture("background.jpg");
 		camera = new OrthographicCamera();
 		scene = new Scenery(camera);
+		voc = new VocabularyProvider();
 
 		// font creation
 		font = new BitmapFont();
@@ -112,7 +115,10 @@ public class AngryWirdsGame extends ApplicationAdapter {
 			@Override
 			public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 				Vector3 realPress = unproject(screenX, screenY);
-				if (bird.getSprite().getBoundingRectangle().contains(realPress.x, realPress.y)) bird.unFreeze();
+				if (bird.getSprite().getBoundingRectangle().contains(realPress.x, realPress.y)) {
+					bird.unFreeze();
+					voc.getLanguages();
+				}
 				touchedPig = null;
 				return true;
 			}
