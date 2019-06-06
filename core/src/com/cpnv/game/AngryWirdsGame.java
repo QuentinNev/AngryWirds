@@ -41,7 +41,7 @@ public class AngryWirdsGame extends ApplicationAdapter {
 	private static final int WORLD_HEIGHT = 900;
 	private static final int FLOOR_HEIGHT = 120;
 
-	private String pigText;
+	private Pig touchedPig;
 
 	@Override
 	public void create () {
@@ -59,7 +59,7 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		scene = new Scenery(camera);
 		font = new BitmapFont();
 
-		pigText = null;
+		touchedPig = null;
 
 		bird = new Bird(new Vector2(100,500));
 		wasp = new Wasp(new Vector2(500, 500));
@@ -107,14 +107,14 @@ public class AngryWirdsGame extends ApplicationAdapter {
 			public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 				Vector3 realPress = unproject(screenX, screenY);
 				if (bird.getSprite().getBoundingRectangle().contains(realPress.x, realPress.y)) bird.unFreeze();
-				pigText = null;
+				touchedPig = null;
 				return true;
 			}
 
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 				Vector3 realPress = unproject(screenX, screenY);
-				pigText = scene.checkTouchOnPigs(realPress.x, realPress.y);
+				touchedPig = scene.checkTouchOnPigs(realPress.x, realPress.y);
 				return true;
 			}
 		});
@@ -141,8 +141,8 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		batch.begin();
 		batch.draw(background, 0, 0, camera.viewportWidth, camera.viewportHeight);
 		scene.draw(batch);
-		if(pigText != null){
-			font.draw(batch, pigText, 10, 200);
+		if(touchedPig != null){
+			font.draw(batch, touchedPig.getWord(), touchedPig.getSprite().getX(), touchedPig.getSprite().getY() + 200);
 		}
 		batch.end();
 	}

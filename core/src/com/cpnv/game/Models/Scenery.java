@@ -72,11 +72,11 @@ public final class Scenery {
     }
 
     // Only called on touchDown()
-    public String checkTouchOnPigs(float x, float y) {
+    public Pig checkTouchOnPigs(float x, float y) {
         for(Actor item: scene) {
             if (item.getClass() == Pig.class && item.getSprite().getBoundingRectangle().contains(x, y)) {
                 Pig p = (Pig)item;
-                return p.getWord();
+                return p;
             }
         }
         return null;
