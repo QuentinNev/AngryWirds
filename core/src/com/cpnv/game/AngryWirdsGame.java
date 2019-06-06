@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.InputAdapter;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -23,8 +24,9 @@ import com.cpnv.game.Models.Scenery;
 import com.cpnv.game.Models.Tnt;
 import com.cpnv.game.Models.Wasp;
 
-import java.util.ArrayList;
 import java.util.Random;
+
+import static com.badlogic.gdx.graphics.Color.BLACK;
 
 public class AngryWirdsGame extends ApplicationAdapter {
 	private SpriteBatch batch;
@@ -57,9 +59,14 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		background = new Texture("background.jpg");
 		camera = new OrthographicCamera();
 		scene = new Scenery(camera);
+
+		// font creation
 		font = new BitmapFont();
+		font.getData().setScale(3, 3);
+		font.setColor(BLACK);
 
 		touchedPig = null;
+		pigLocation = null;
 
 		bird = new Bird(new Vector2(100,500));
 		wasp = new Wasp(new Vector2(500, 500));
