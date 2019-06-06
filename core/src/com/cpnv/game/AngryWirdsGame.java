@@ -66,7 +66,6 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		font.setColor(BLACK);
 
 		touchedPig = null;
-		pigLocation = null;
 
 		bird = new Bird(new Vector2(100,500));
 		wasp = new Wasp(new Vector2(500, 500));
