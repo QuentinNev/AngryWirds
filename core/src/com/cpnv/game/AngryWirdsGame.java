@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 
 import com.badlogic.gdx.InputAdapter;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -75,6 +74,7 @@ public class AngryWirdsGame extends ApplicationAdapter {
 
 		birdDefaultPos = new Vector2(150, 300);
 		bird = new Bird(birdDefaultPos);
+		final Vector2 birdOffset = new Vector2(bird.getSprite().getWidth() / 2, bird.getSprite().getHeight() / 2);
 		dragPos = new Vector2(0,0);
 
 		wasp = new Wasp(new Vector2(500, 500));
@@ -123,9 +123,10 @@ public class AngryWirdsGame extends ApplicationAdapter {
 				Vector3 realPress = unproject(screenX, screenY);
 				if (bird.touched) {
 					bird.touched = false;
-					Vector2 result = birdDefaultPos.cpy();
-					Gdx.app.log("ANGRY", "" + result);
-					bird.setForce(result.sub(new Vector2(realPress.x, realPress.y)));
+					realPress.sub(birdDefaultPos.x, birdDefaultPos.y, 0);
+					// This ugly stuff is necessary because Vector3 doesn't have a method to transform itself into a Vector2
+					Vector2 result = new Vector2(birdDefaultPos.x - realPress.x, birdDefaultPos.y - realPress.y);
+					bird.setForce(result);
 					bird.unFreeze();
 					//voc.getLanguages();
 				}
@@ -136,21 +137,19 @@ public class AngryWirdsGame extends ApplicationAdapter {
 
 			@Override
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-				Vector3 realPress = unproject(screenX, screenY);
-				touchedPig = scene.checkTouchOnPigs(realPress.x, realPress.y);
-				if (bird.getSprite().getBoundingRectangle().contains(realPress.x, realPress.y)) {
-					bird.touched = true;
-				}
+					Vector3 realPress = unproject(screenX, screenY);
+					touchedPig = scene.checkTouchOnPigs(realPress.x, realPress.y);
+					bird.touched = (bird.getSprite().getBoundingRectangle().contains(realPress.x, realPress.y));
 				return true;
 			}
 
 			@Override
 			public boolean touchDragged(int screenX, int screenY, int pointer){
-				/*Vector3 realPress = unproject(screenX, screenY);
-				dragPos.set(realPress.x, realPress.y);
-				Vector2 cp = birdDefaultPos;
-				cp.sub(dragPos);
-				Gdx.app.log("ANGRY", "" + cp);*/
+				if (bird.touched) {
+					Vector3 realPress = unproject(screenX, screenY);
+					Gdx.app.log("ANGRY", "Bird offset : " + birdOffset);
+					bird.getSprite().setPosition(realPress.x - birdOffset.x, realPress.y - birdOffset.y);
+				}
 				return true;
 			}
 		});
@@ -166,7 +165,7 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		collider = scene.checkBirdCollisions(bird);
 
 		checkCollision(collider);
-		if(bird.getSprite().getY() <= FLOOR_HEIGHT|| bird.getSprite().getX() < 0) {
+		if(bird.getSprite().getY() <= FLOOR_HEIGHT && bird.getSprite().getX() > 400 || bird.getSprite().getX() < -100 || bird.getSprite().getX() > WORLD_WIDTH) {
 			resetObjects();
 		}
 	}
@@ -194,9 +193,8 @@ public class AngryWirdsGame extends ApplicationAdapter {
 	private void checkCollision(Actor collider){
 		if (collider != null){
 			// here we convert the class name into an int to be able to switch on it because android
-			// SDK doesn't use JDK 1.7 it seems
+			// SDK doesn't use JDK 1.7 it seems and it's needed to switch on string
 			int colliderCode = collider.getClass().getSimpleName().hashCode();
-			//Gdx.app.log("ANGRY", "Touched " + collider.getClass().getSimpleName() + " as " + collider.getClass().getSimpleName().hashCode());
 			bird.freeze();
 			switch (colliderCode) {
 				// WASP or a good metal group
