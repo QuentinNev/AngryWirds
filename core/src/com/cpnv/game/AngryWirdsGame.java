@@ -39,6 +39,9 @@ public class AngryWirdsGame extends ApplicationAdapter {
 	private VocabularyProvider voc;
 
 	private Bird bird;
+	private Vector2 birdDefaultPos;
+	private Vector2 dragPos;
+
 	private Wasp wasp;
 
 	private static final int WORLD_WIDTH = 1600;
@@ -70,7 +73,10 @@ public class AngryWirdsGame extends ApplicationAdapter {
 
 		touchedPig = null;
 
-		bird = new Bird(new Vector2(100,500));
+		birdDefaultPos = new Vector2(150, 300);
+		bird = new Bird(birdDefaultPos);
+		dragPos = new Vector2(0,0);
+
 		wasp = new Wasp(new Vector2(500, 500));
 		collider = null;
         scene.add(bird);
@@ -115,10 +121,15 @@ public class AngryWirdsGame extends ApplicationAdapter {
 			@Override
 			public boolean touchUp (int screenX, int screenY, int pointer, int button) {
 				Vector3 realPress = unproject(screenX, screenY);
-				if (bird.getSprite().getBoundingRectangle().contains(realPress.x, realPress.y)) {
+				if (bird.touched) {
+					bird.touched = false;
+					Vector2 result = birdDefaultPos.cpy();
+					Gdx.app.log("ANGRY", "" + result);
+					bird.setForce(result.sub(new Vector2(realPress.x, realPress.y)));
 					bird.unFreeze();
-					voc.getLanguages();
+					//voc.getLanguages();
 				}
+
 				touchedPig = null;
 				return true;
 			}
@@ -127,6 +138,19 @@ public class AngryWirdsGame extends ApplicationAdapter {
 			public boolean touchDown(int screenX, int screenY, int pointer, int button) {
 				Vector3 realPress = unproject(screenX, screenY);
 				touchedPig = scene.checkTouchOnPigs(realPress.x, realPress.y);
+				if (bird.getSprite().getBoundingRectangle().contains(realPress.x, realPress.y)) {
+					bird.touched = true;
+				}
+				return true;
+			}
+
+			@Override
+			public boolean touchDragged(int screenX, int screenY, int pointer){
+				/*Vector3 realPress = unproject(screenX, screenY);
+				dragPos.set(realPress.x, realPress.y);
+				Vector2 cp = birdDefaultPos;
+				cp.sub(dragPos);
+				Gdx.app.log("ANGRY", "" + cp);*/
 				return true;
 			}
 		});
@@ -142,6 +166,9 @@ public class AngryWirdsGame extends ApplicationAdapter {
 		collider = scene.checkBirdCollisions(bird);
 
 		checkCollision(collider);
+		if(bird.getSprite().getY() <= FLOOR_HEIGHT|| bird.getSprite().getX() < 0) {
+			resetObjects();
+		}
 	}
 
 	@Override

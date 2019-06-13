@@ -1,5 +1,6 @@
 package com.cpnv.game.Models;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 
@@ -9,10 +10,11 @@ public class Bird extends MovingObject {
     private float throwStrength;
     private static final Vector2 size = new Vector2(175, 150);
     private static final String spritePath = "bean.png";
+    public boolean touched = false;
 
     public Bird(Vector2 position) {
         super(spritePath, position, size);
-        throwStrength = 1000f;
+        throwStrength = 0f;
         freezed = true;
     }
 
@@ -40,5 +42,11 @@ public class Bird extends MovingObject {
     public void reset() {
         super.reset();
         freeze();
+    }
+
+    public void setForce(Vector2 force){
+        throwStrength = force.x * 10;
+        velocity.y = force.y;
+        Gdx.app.log("ANGRY", "X : " + force.x * 10 + " // Y : " + force.y);
     }
 }
