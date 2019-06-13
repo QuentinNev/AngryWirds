@@ -24,6 +24,7 @@ public abstract class MovingObject extends Actor {
 
     public void freeze(){
         freezed = true;
+        velocity = new Vector2(0,0);
     }
 
     public void unFreeze() {
