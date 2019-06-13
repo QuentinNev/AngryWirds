@@ -4,13 +4,17 @@ package com.cpnv.game;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 
+// INPUTS
 import com.badlogic.gdx.InputAdapter;
 
+// DISPLAY
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 
+
+// VECTORS
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
@@ -128,7 +132,7 @@ public class AngryWirdsGame extends ApplicationAdapter {
 					Vector2 result = new Vector2(birdDefaultPos.x - realPress.x, birdDefaultPos.y - realPress.y);
 					bird.setForce(result);
 					bird.unFreeze();
-					//voc.getLanguages();
+					voc.getLanguages();
 				}
 
 				touchedPig = null;
@@ -147,7 +151,6 @@ public class AngryWirdsGame extends ApplicationAdapter {
 			public boolean touchDragged(int screenX, int screenY, int pointer){
 				if (bird.touched) {
 					Vector3 realPress = unproject(screenX, screenY);
-					Gdx.app.log("ANGRY", "Bird offset : " + birdOffset);
 					bird.getSprite().setPosition(realPress.x - birdOffset.x, realPress.y - birdOffset.y);
 				}
 				return true;

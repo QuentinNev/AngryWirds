@@ -2,21 +2,46 @@ package com.cpnv.game.Models;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
-import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonValue;
 
-import org.omg.CORBA.Any;
+import java.util.ArrayList;
 
 public class VocabularyProvider {
+    public class LanguageFactory {
+        public class LanguagePrototype {
+            private int lId;
+            private String lName;
+        }
+
+        public class Language {
+            private int lId;
+            private String lName;
+
+            public Language (int id, String name){
+                lId = id;
+                lName = name;
+            }
+        }
+
+        private ArrayList<LanguagePrototype> prototypes;
+
+        public Language createLanguage(int id){
+            LanguagePrototype languagePrototype = prototypes.get(id);
+            Language l = new Language(id, languagePrototype.lName);
+        }
+
+    }
+
     private String vocUrlPrefix;
     protected Net.HttpRequest request;
-    private JsonReader json;
+    private Json json;
     private JsonValue jsonValue;
 
     public VocabularyProvider() {
         request = new Net.HttpRequest(Net.HttpMethods.GET);
         vocUrlPrefix = "http://voxerver.mycpnv.ch/api/v1/";
-        json = new JsonReader();
+        json = new Json();
     }
 
     private void sendRequest() {
@@ -25,7 +50,8 @@ public class VocabularyProvider {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
                 String result = httpResponse.getResultAsString();
-                Gdx.app.log("ANGRY", result);
+                Language truc = json.fromJson(Language.class, result);
+                Gdx.app.log("ANGRY", "" + truc);
 
             }
 
