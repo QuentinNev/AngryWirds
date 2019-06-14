@@ -3,56 +3,50 @@ package com.cpnv.game.Models;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Net;
 import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
+import com.cpnv.game.Models.Voc.Assignment;
+import com.cpnv.game.Models.Voc.Language;
+import com.cpnv.game.Models.Voc.Vocabulary;
 
 import java.util.ArrayList;
 
 public class VocabularyProvider {
-    public class LanguageFactory {
-        public class LanguagePrototype {
-            private int lId;
-            private String lName;
-        }
-
-        public class Language {
-            private int lId;
-            private String lName;
-
-            public Language (int id, String name){
-                lId = id;
-                lName = name;
-            }
-        }
-
-        private ArrayList<LanguagePrototype> prototypes;
-
-        public Language createLanguage(int id){
-            LanguagePrototype languagePrototype = prototypes.get(id);
-            Language l = new Language(id, languagePrototype.lName);
-        }
-
-    }
-
     private String vocUrlPrefix;
     protected Net.HttpRequest request;
     private Json json;
-    private JsonValue jsonValue;
+    private JsonReader jsonReader;
+    protected String result;
+
+    // Datas
+    private ArrayList<Language> languages;
+    private ArrayList<Vocabulary> vocs;
+    private ArrayList<Assignment> assignments;
 
     public VocabularyProvider() {
         request = new Net.HttpRequest(Net.HttpMethods.GET);
         vocUrlPrefix = "http://voxerver.mycpnv.ch/api/v1/";
         json = new Json();
+        jsonReader = new JsonReader();
+
+        languages = new ArrayList<Language>();
+        vocs = new ArrayList<Vocabulary>();
+        assignments = new ArrayList<Assignment>();
     }
 
-    private void sendRequest() {
-        Gdx.app.log("ANGRY", "FUCK SHIT MAN");
+    public void sendRequest() {
+        // Get voc
+        request.setUrl(vocUrlPrefix + "languages");
         Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
             @Override
             public void handleHttpResponse(Net.HttpResponse httpResponse) {
-                String result = httpResponse.getResultAsString();
-                Language truc = json.fromJson(Language.class, result);
-                Gdx.app.log("ANGRY", "" + truc);
-
+                JsonValue languagesDatas = jsonReader.parse(httpResponse.getResultAsString());
+                for (JsonValue language : languagesDatas){
+                    languages.add(new Language(language.getString("lName"), language.getInt("lId")));
+                }
+                for (Language language : languages) {
+                    Gdx.app.log("ANGRY - Language", "" + language.getName());
+                }
             }
 
             @Override
@@ -68,9 +62,7 @@ public class VocabularyProvider {
     }
 
     public void getLanguages() {
-        request.setUrl(vocUrlPrefix + "languages");
         sendRequest();
-
     }
 
     public void getVoc(Integer vocId) {
