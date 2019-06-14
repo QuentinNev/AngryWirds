@@ -34,7 +34,12 @@ public class VocabularyProvider {
         assignments = new ArrayList<Assignment>();
     }
 
-    public void sendRequest() {
+    public void refreshDatas() {
+        // Empty arrays
+        languages.clear();
+        vocs.clear();
+        assignments.clear();
+
         // Get voc
         request.setUrl(vocUrlPrefix + "languages");
         Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
@@ -62,7 +67,7 @@ public class VocabularyProvider {
     }
 
     public void getLanguages() {
-        sendRequest();
+        resfreshDatas();
     }
 
     public void getVoc(Integer vocId) {
